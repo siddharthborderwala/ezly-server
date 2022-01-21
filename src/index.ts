@@ -17,7 +17,6 @@ const PORT = process.env.PORT ?? '8000';
 const start = async () => {
   try {
     await app.listen(PORT);
-    console.log(`running on ${PORT}`);
   } catch (err) {
     app.log.error(err);
     process.exit(1);
@@ -42,7 +41,7 @@ process.on('SIGTERM', () => {
   console.log('SIGTERM RECEIVED 🙃, shutting down gracefully...');
 
   app.close(() => {
-    console.log('Process terminated 💀');
+    console.log('App closed terminated 💀');
   });
 });
 
@@ -50,7 +49,7 @@ process.on('SIGINT', () => {
   console.log('SIGINT RECEIVED 🙃, shutting down gracefully...');
 
   app.close(() => {
-    console.log('Process terminated 💀');
+    console.log('App closed terminated 💀');
   });
 });
 
