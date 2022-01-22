@@ -2,7 +2,13 @@ import fp from 'fastify-plugin';
 import { FastifyPluginAsync } from 'fastify';
 import { Tedis } from 'tedis';
 
-const prismaPlugin: FastifyPluginAsync = fp(async (server, options) => {
+declare module 'fastify' {
+  interface FastifyInstance {
+    redis: Tedis;
+  }
+}
+
+const tedisPlugin: FastifyPluginAsync = fp(async (server, options) => {
   const redis = new Tedis({
     host: '127.0.0.1',
     port: 6379,
@@ -16,4 +22,4 @@ const prismaPlugin: FastifyPluginAsync = fp(async (server, options) => {
   });
 });
 
-export default prismaPlugin;
+export default tedisPlugin;
