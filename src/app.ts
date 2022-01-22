@@ -7,6 +7,7 @@ import authPlugin from './plugins/auth';
 import prismaPlugin from './plugins/prisma';
 import redisPlugin from './plugins/redis';
 import AuthenticationRouter from './routes/authentication';
+import LinksRouter from './routes/links';
 
 const app = Fastify({
   logger:
@@ -41,6 +42,10 @@ app.get('/ping', async (req, reply) => {
 
 app.register(AuthenticationRouter, {
   prefix: '/api/v1/auth',
+});
+
+app.register(LinksRouter, {
+  prefix: '/api/v1/links',
 });
 
 app.get('/:alias', async (req, reply) => {
