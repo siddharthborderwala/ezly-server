@@ -9,6 +9,7 @@ process.on('uncaughtException', (error) => {
     error.stack,
     '\nGracefully shutting down...'
   );
+
   process.exit(1);
 });
 
@@ -39,18 +40,12 @@ process.on('unhandledRejection', (error: any) => {
 
 process.on('SIGTERM', () => {
   console.log('SIGTERM RECEIVED 🙃, shutting down gracefully...');
-
-  app.close(() => {
-    console.log('App closed terminated 💀');
-  });
+  app.close();
 });
 
 process.on('SIGINT', () => {
   console.log('SIGINT RECEIVED 🙃, shutting down gracefully...');
-
-  app.close(() => {
-    console.log('App closed terminated 💀');
-  });
+  app.close();
 });
 
 start();

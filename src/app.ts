@@ -9,7 +9,8 @@ import redisPlugin from './plugins/redis';
 import AuthenticationRouter from './routes/authentication';
 
 const app = Fastify({
-  logger: { prettyPrint: process.env.NODE_ENV !== 'production' },
+  logger:
+    process.env.NODE_ENV === 'development' ? { prettyPrint: true } : false,
 });
 
 app.register(sensible);
@@ -39,7 +40,7 @@ app.get('/ping', async (req, reply) => {
 });
 
 app.register(AuthenticationRouter, {
-  prefix: '/v1/auth',
+  prefix: '/api/v1/auth',
 });
 
 app.get('/:alias', async (req, reply) => {
