@@ -9,6 +9,10 @@ declare module 'fastify' {
 }
 
 const tedisPlugin: FastifyPluginAsync = fp(async (server, options) => {
+  console.log(`
+    ${process.env.REDIS_HOST}
+  `);
+
   const redis = new Tedis({
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT as unknown as number,

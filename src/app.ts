@@ -9,7 +9,6 @@ import prismaPlugin from './plugins/prisma';
 import redisPlugin from './plugins/redis';
 import AuthenticationRouter from './routes/authentication';
 import LinksRouter from './routes/links';
-import { env } from 'process';
 
 const app = Fastify({
   logger:
@@ -22,6 +21,7 @@ app.register(cookie, {
   parseOptions: {
     sameSite: 'strict',
     signed: true,
+    httpOnly: true,
   },
 });
 app.register(fastifyRequestContextPlugin, {

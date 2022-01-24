@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "dotenv -e .env.development nodemon --exec ts-node src/index.ts",
+    "dev": "dotenv -e .env.development nodemon --ignore db-data/ --exec ts-node src/index.ts",
     "build": "tsc",
     "start": "node build/index.js",
     "clean": "rm -rf build",
@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@prisma/client": "^3.8.1",
+    "@types/ioredis": "^4.28.7",
     "bcrypt": "^5.0.1",
     "dotenv": "^14.2.0",
     "fastify": "^3.26.0",
@@ -42,6 +43,7 @@
     "fastify-request-context": "^2.2.0",
     "fastify-sensible": "^3.1.2",
     "fastify-swagger": "^4.13.1",
+    "ioredis": "^4.28.3",
     "jsonwebtoken": "^8.5.1",
     "nanoid": "^3.2.0",
     "pino-pretty": "^7.5.0",

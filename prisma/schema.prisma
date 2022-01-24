@@ -8,7 +8,27 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  password String
-  email    String @unique
+  id          String       @id @default(uuid())
+  password    String
+  email       String       @unique
+  collections Collection[]
+  Link        Link[]
+}
+
+model Link {
+  id            String     @id @default(uuid())
+  url           String
+  short_url     String     @unique
+  collection    Collection @relation(fields: [collection_id], references: [id])
+  collection_id String
+  user          User       @relation(fields: [user_id], references: [id])
+  user_id       String
+}
+
+model Collection {
+  id      String @id @default(uuid())
+  name    String @unique
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+  links   Link[]
 }
