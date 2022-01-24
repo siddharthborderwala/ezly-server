@@ -39,6 +39,9 @@ app.register(fastifySwagger, {
       description: 'Testing the API end points',
       version: '0.1.0',
     },
+    consumes: ['application/json'],
+    produces: ['application/json'],
+    tags: [{ name: 'auth', description: 'Auth Related end-points' }],
   },
 });
 
