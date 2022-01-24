@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "dotenv -e .env.development nodemon --ignore db-data/ --exec ts-node src/index.ts",
+    "dev": "dotenv -e .env.development nodemon --exec ts-node src/index.ts",
     "build": "tsc",
     "start": "node build/index.js",
     "clean": "rm -rf build",
