@@ -12,7 +12,7 @@ model User {
   password    String
   email       String       @unique
   collections Collection[]
-  Link        Link[]
+  links       Link[]
 }
 
 model Link {
@@ -27,7 +27,7 @@ model Link {
 
 model Collection {
   id      String @id @default(uuid())
-  name    String @unique
+  name    String
   user    User   @relation(fields: [user_id], references: [id])
   user_id String
   links   Link[]

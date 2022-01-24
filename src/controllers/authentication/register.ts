@@ -64,6 +64,7 @@ export const register =
       });
     } catch (error) {
       // is it an error from prisma/db
+      console.log(error);
       const errcode = (error as any).code;
       if (errcode) {
         switch (errcode) {

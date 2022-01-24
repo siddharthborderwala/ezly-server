@@ -5,18 +5,11 @@ const URL_LENGTH = 10;
 
 export const linkHelper = (url: string, redis: Tedis) => {
   return {
+    // TODO Maybe add check if shortid generates identical, very unlikely tho
     async addLink() {
-      // TODO Remove this loop if it seems extra
       const id = nanoid(URL_LENGTH);
-      console.log('generated id => ', id);
-      const exists = await redis.exists(id);
-      if (exists === 0) {
-        await redis.set(id, url);
-        return {
-          shortUrl: id,
-        };
-      }
-      // while (true) {}
+      await redis.set(id, url);
+      return id;
     },
   };
 };

@@ -58,22 +58,24 @@ export const createLink =
 
         return reply.status(201).send({
           msg: 'alias created successfully',
+          alias,
+          url,
         });
       } else {
-        console.log('hell');
-        const data = await linkHelper(url, fastify.redis).addLink();
-        console.log(data?.shortUrl);
+        const shortUrl = await linkHelper(url, fastify.redis).addLink();
         await fastify.prisma.link.create({
           data: {
             user_id: id,
             collection_id: collection[0].id,
-            short_url: data?.shortUrl as string,
+            short_url: shortUrl,
             url,
           },
         });
 
         return reply.status(201).send({
           msg: 'short created successfully',
+          shortUrl,
+          url,
         });
       }
     } catch (err) {
