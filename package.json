@@ -10,7 +10,8 @@
     "clean": "rm -rf build",
     "test": "tap --ts --reporter=list --no-check-coverage tests/**/*.ts",
     "prisma:dev": "dotenv -e .env.development npx prisma",
-    "prisma:test": "dotenv -e .env.test npx prisma"
+    "prisma:test": "dotenv -e .env.test npx prisma",
+    "prisma:push": "dotenv -e .env.development npx prisma db push"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
