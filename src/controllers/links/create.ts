@@ -27,8 +27,6 @@ export const createLink =
         },
       });
 
-      console.log(collection);
-
       if (collection.length === 0) {
         return reply.badRequest('no such collection exists');
       }
