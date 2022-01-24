@@ -49,14 +49,22 @@ export const register =
         },
       });
 
+      await fastify.prisma.collection.create({
+        data: {
+          name: 'general',
+          user_id: user.id,
+        },
+      });
+
       const token = createAndSignJWT({ id: user.id });
 
-      return reply.status(201).send({
+      return reply.status(201).setCookie('token', token).send({
         user: { email },
         token,
       });
     } catch (error) {
       // is it an error from prisma/db
+      console.log(error);
       const errcode = (error as any).code;
       if (errcode) {
         switch (errcode) {

@@ -6,3 +6,4 @@ node_modules
 .nyc_output/
 db-data
 test.http
+yarn-error.log

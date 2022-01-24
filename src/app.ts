@@ -9,7 +9,6 @@ import prismaPlugin from './plugins/prisma';
 import redisPlugin from './plugins/redis';
 import AuthenticationRouter from './routes/authentication';
 import LinksRouter from './routes/links';
-import { env } from 'process';
 
 const app = Fastify({
   logger:
@@ -22,6 +21,7 @@ app.register(cookie, {
   parseOptions: {
     sameSite: 'strict',
     signed: true,
+    httpOnly: true,
   },
 });
 app.register(fastifyRequestContextPlugin, {
@@ -47,7 +47,7 @@ app.register(fastifySwagger, {
 
 app.register(authPlugin);
 app.register(prismaPlugin);
-// app.register(redisPlugin);
+app.register(redisPlugin);
 
 app.get('/', async (req, reply) => {
   reply.status(200).send('hello world');
