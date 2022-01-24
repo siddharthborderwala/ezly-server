@@ -30,7 +30,7 @@ app.register(fastifyRequestContextPlugin, {
 
 app.register(authPlugin);
 app.register(prismaPlugin);
-// app.register(redisPlugin);
+app.register(redisPlugin);
 
 app.get('/', async (req, reply) => {
   reply.status(200).send('hello world');
