@@ -1,6 +1,21 @@
 import { FastifyInstance } from 'fastify';
 import { register, login } from '../controllers/authentication';
 
+const authResponse = {
+  200: {
+    type: 'object',
+    properties: {
+      user: {
+        type: 'object',
+        properties: {
+          email: { type: 'string' },
+        },
+      },
+      token: { type: 'string' },
+    },
+  },
+};
+
 const registerOpts = {
   schema: {
     description: 'Register route',
@@ -19,6 +34,7 @@ const registerOpts = {
         },
       },
     },
+    response: authResponse,
   },
 };
 
@@ -37,6 +53,7 @@ const loginOpts = {
         },
       },
     },
+    response: authResponse,
   },
 };
 
