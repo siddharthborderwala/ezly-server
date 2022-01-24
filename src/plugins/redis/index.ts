@@ -10,9 +10,9 @@ declare module 'fastify' {
 
 const tedisPlugin: FastifyPluginAsync = fp(async (server, options) => {
   const redis = new Tedis({
-    host: '127.0.0.1',
-    port: 6379,
-    password: 'password',
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT as unknown as number,
+    password: process.env.REDIS_PASSWORD,
   });
 
   // Make Redis Client available through the fastify server instance: server.redis
