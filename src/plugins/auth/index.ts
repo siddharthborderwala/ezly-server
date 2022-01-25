@@ -49,7 +49,12 @@ const authPlugin: FastifyPluginAsync = fp(
               id: payload.id,
             },
           });
-          request.requestContext.set('user', { id: payload.id });
+
+          if (!user) {
+            return reply.notFound('user not found');
+          }
+
+          request.requestContext.set('user', { id: user.id });
         } catch (err) {
           reply.notFound('user not found');
         }
