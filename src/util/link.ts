@@ -6,25 +6,22 @@ const URL_LENGTH = 10;
 export const linkHelper = (url: string, redis: Tedis) => {
   return {
     // TODO Maybe add check if shortid generates identical, very unlikely tho
-    async addLink() {
+    async create() {
       const id = nanoid(URL_LENGTH);
       await redis.set(id, url);
       return id;
     },
-  };
-};
-
-export const aliasHelper = (alias: string, redis: Tedis) => {
-  return {
-    alreadyExists() {
-      return redis.exists(alias);
+    delete(key: string) {
+      return redis.del(key);
     },
-    setAlias(url: string) {
+    createAlias(alias: string) {
       return redis.set(alias, url);
     },
-    // TODO Maybe add more validations
-    validate() {
-      return alias.length > 3;
+    validateAlias(alias: string) {
+      return alias.length >= 3;
+    },
+    exists(key: string) {
+      return redis.exists(key);
     },
   };
 };
