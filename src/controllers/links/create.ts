@@ -1,5 +1,5 @@
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { linkHelper } from './../../util/link';
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 
 type CreateLinkType = {
   isAlias: boolean;
@@ -20,7 +20,7 @@ export const createLink =
     } = request.body as CreateLinkType;
 
     try {
-      const linkClient = linkHelper(url, fastify.redis);
+      const linkClient = linkHelper(fastify.redis);
       let shortUrl;
 
       const collections = await fastify.prisma.collection.findMany({
@@ -47,7 +47,7 @@ export const createLink =
           return reply.badRequest('alias already in use');
         }
 
-        await linkClient.createAlias(alias);
+        await linkClient.createAlias(alias, url);
         await fastify.prisma.link.create({
           data: {
             user_id: id,
@@ -59,7 +59,7 @@ export const createLink =
 
         shortUrl = alias;
       } else {
-        shortUrl = await linkClient.create();
+        shortUrl = await linkClient.create(url);
         await fastify.prisma.link.create({
           data: {
             user_id: id,
