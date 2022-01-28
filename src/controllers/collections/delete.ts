@@ -31,14 +31,11 @@ export const deleteCollection =
         },
       });
 
-      // TODO Fix this async iteration
       await Promise.all(
         links.map((link) => {
           return fastify.redis.del(link.short_url);
         })
       );
-
-      // ---->>
 
       await fastify.prisma.link.deleteMany({
         where: {
