@@ -9,8 +9,8 @@ import prismaPlugin from './plugins/prisma';
 import redisPlugin from './plugins/redis';
 import AuthenticationRouter from './routes/authentication';
 import LinksRouter from './routes/links';
+import CollectionRouter from './routes/collections';
 import AnalyticsRoute from './routes/analytics';
-import { env } from 'process';
 
 const app = Fastify({
   logger:
@@ -65,6 +65,10 @@ app.register(AuthenticationRouter, {
 
 app.register(LinksRouter, {
   prefix: '/api/v1/links',
+});
+
+app.register(CollectionRouter, {
+  prefix: '/api/v1/collections',
 });
 
 app.register(AnalyticsRoute, {

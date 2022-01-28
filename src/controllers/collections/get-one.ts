@@ -1,25 +1,24 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
-export const getCollections =
+export const getOneCollection =
   (fastify: FastifyInstance) =>
   async (request: FastifyRequest, reply: FastifyReply) => {
-    const { id }: { id: string } = request.requestContext.get('user');
+    const { collectionId }: any = request.params;
 
     try {
-      const collections = await fastify.prisma.collection.findMany({
+      const collection = await fastify.prisma.collection.findFirst({
         where: {
-          user_id: id,
+          id: collectionId,
         },
         include: {
           links: true,
-          user: true,
         },
       });
 
       return reply.status(200).send({
-        collections,
+        collection,
       });
     } catch (err) {
-      return reply.badRequest('error while retreiving all collections');
+      return reply.badRequest('error while retreiving the collection');
     }
   };
