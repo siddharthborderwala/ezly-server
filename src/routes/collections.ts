@@ -1,7 +1,10 @@
+import {
+  createCollection,
+  deleteCollection,
+} from './../controllers/collections';
 import { FastifyInstance } from 'fastify';
-import { createLink } from '../controllers/links';
 
-const LinksRouter = async (
+const CollectionRouter = async (
   fastify: FastifyInstance,
   options: Record<any, any>
 ) => {
@@ -10,16 +13,14 @@ const LinksRouter = async (
     {
       preHandler: [fastify.verifyJWT],
     },
-    createLink(fastify)
+    createCollection(fastify)
   );
 
-  fastify.delete(
-    '/:linkId',
+  fastify.post(
+    '/delete',
     {
       preHandler: [fastify.verifyJWT],
     },
-    createLink(fastify)
+    deleteCollection(fastify)
   );
 };
-
-export default LinksRouter;

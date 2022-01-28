@@ -1,4 +1,4 @@
-import { aliasHelper, linkHelper } from './../../util/link';
+import { linkHelper } from './../../util/link';
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 
 type CreateLinkType = {
@@ -20,64 +20,63 @@ export const createLink =
     } = request.body as CreateLinkType;
 
     try {
-      const collection = await fastify.prisma.collection.findMany({
+      const linkClient = linkHelper(url, fastify.redis);
+      let shortUrl;
+
+      const collections = await fastify.prisma.collection.findMany({
         where: {
           name: collectionName,
           user_id: id,
         },
       });
 
-      if (collection.length === 0) {
+      if (collections.length === 0) {
         return reply.badRequest('no such collection exists');
       }
 
-      if (isAlias) {
-        const aliasClient = aliasHelper(alias, fastify.redis);
+      const collection = collections[0];
 
-        if (!aliasClient.validate()) {
+      if (isAlias) {
+        if (!linkClient.validateAlias(alias)) {
           return reply.badRequest('incorrect alias provided');
         }
 
-        const exists = await aliasClient.alreadyExists();
+        const exists = await linkClient.exists(alias);
 
         if (exists) {
           return reply.badRequest('alias already in use');
         }
 
-        await aliasClient.setAlias(url);
+        await linkClient.createAlias(alias);
         await fastify.prisma.link.create({
           data: {
             user_id: id,
-            collection_id: collection[0].id,
+            collection_id: collection.id,
             short_url: alias,
             url,
           },
         });
 
-        return reply.status(201).send({
-          msg: 'alias created successfully',
-          alias,
-          url,
-        });
+        shortUrl = alias;
       } else {
-        const shortUrl = await linkHelper(url, fastify.redis).addLink();
+        shortUrl = await linkClient.create();
         await fastify.prisma.link.create({
           data: {
             user_id: id,
-            collection_id: collection[0].id,
+            collection_id: collection.id,
             short_url: shortUrl,
             url,
           },
         });
-
-        return reply.status(201).send({
-          msg: 'short created successfully',
-          shortUrl,
-          url,
-        });
       }
+
+      return reply.status(201).send({
+        msg: 'short url created successfully',
+        shortUrl,
+        url,
+        collectionId: collection.id,
+      });
     } catch (err) {
-      console.log(err);
       return reply.badRequest('error while creating short url');
     }
   };
