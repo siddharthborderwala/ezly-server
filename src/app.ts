@@ -10,6 +10,7 @@ import redisPlugin from './plugins/redis';
 import AuthenticationRouter from './routes/authentication';
 import LinksRouter from './routes/links';
 import CollectionRouter from './routes/collections';
+import AnalyticsRoute from './routes/analytics';
 
 const app = Fastify({
   logger:
@@ -67,7 +68,11 @@ app.register(LinksRouter, {
 });
 
 app.register(CollectionRouter, {
-  prefix: '/api/v1/collection',
+  prefix: '/api/v1/collections',
+});
+
+app.register(AnalyticsRoute, {
+  prefix: '/api/v1/track',
 });
 
 app.get('/:alias', async (req, reply) => {
