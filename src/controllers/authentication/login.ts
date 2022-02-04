@@ -25,7 +25,7 @@ export const login =
       const isValidPassword = await bcrypt.compare(password, user?.password!);
 
       if (!isValidPassword) {
-        reply.forbidden('please check the email and password');
+        reply.unauthorized('please check the email and password');
       }
 
       const token = createAndSignJWT({ id: user!.id });
@@ -35,6 +35,6 @@ export const login =
         token,
       });
     } catch (error) {
-      return reply.forbidden('please check the email and password - server');
+      return reply.unauthorized('please check the email and password - server');
     }
   };
