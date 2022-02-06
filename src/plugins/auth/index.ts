@@ -5,8 +5,7 @@ import {
   FastifyReply,
   FastifyRequest,
 } from 'fastify';
-import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -35,16 +34,24 @@ const authPlugin: FastifyPluginAsync = fp(
         // as on the frontend we set the http secure cookies
         const token =
           tokenCookie ?? authorizationHeader?.replace('Bearer ', '');
-        const payload = jwt.verify(token, process.env.JWT_SECRET!) as {
-          id: string;
-        };
-        if (!payload) {
-          return reply.forbidden('not authorized');
+
+        let payload: { id: string };
+
+        try {
+          const res = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+          payload = {
+            id: res.id as string,
+          };
+        } catch {
+          return reply.unauthorized('malformed token');
         }
 
-        const prisma: PrismaClient = server.prisma;
+        if (!payload.id) {
+          return reply.unauthorized('not authorized');
+        }
+
         try {
-          const user = await prisma.user.findUnique({
+          const user = await server.prisma.user.findUnique({
             where: {
               id: payload.id,
             },

@@ -1,10 +1,17 @@
 import { FastifyInstance } from 'fastify';
-import { createLink } from '../controllers/links';
+import {
+  createLink,
+  deleteLink,
+  updateLink,
+  getOneLink,
+} from '../controllers/links';
 
 const LinksRouter = async (
   fastify: FastifyInstance,
   options: Record<any, any>
 ) => {
+  fastify.get('/:linkId', getOneLink(fastify));
+
   fastify.post(
     '/',
     {
@@ -14,11 +21,19 @@ const LinksRouter = async (
   );
 
   fastify.delete(
-    '/:linkId',
+    '/',
     {
       preHandler: [fastify.verifyJWT],
     },
-    createLink(fastify)
+    deleteLink(fastify)
+  );
+
+  fastify.put(
+    '/',
+    {
+      preHandler: [fastify.verifyJWT],
+    },
+    updateLink(fastify)
   );
 };
 

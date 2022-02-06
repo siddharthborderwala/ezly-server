@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { register, login } from '../controllers/authentication';
+import { register, login, logout } from '../controllers/authentication';
 
 const authResponse = {
   200: {
@@ -57,13 +57,18 @@ const loginOpts = {
   },
 };
 
-const AuthenticationRouter = async (
-  fastify: FastifyInstance,
-  options: Record<any, any>
-) => {
+const AuthenticationRouter = async (fastify: FastifyInstance) => {
   fastify.post('/register', registerOpts, register(fastify));
 
   fastify.post('/login', loginOpts, login(fastify));
+
+  fastify.post(
+    '/logout',
+    {
+      preHandler: [fastify.verifyJWT],
+    },
+    logout(fastify)
+  );
 };
 
 export default AuthenticationRouter;
