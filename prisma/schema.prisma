@@ -16,13 +16,14 @@ model User {
 }
 
 model Link {
-  id            String     @id @default(uuid())
+  id            String      @id @default(uuid())
   url           String
-  short_url     String     @unique
-  collection    Collection @relation(fields: [collection_id], references: [id])
+  short_url     String      @unique
+  collection    Collection  @relation(fields: [collection_id], references: [id])
   collection_id String
-  user          User       @relation(fields: [user_id], references: [id])
+  user          User        @relation(fields: [user_id], references: [id])
   user_id       String
+  Analytics     Analytics[]
 }
 
 model Collection {
@@ -33,4 +34,22 @@ model Collection {
   links   Link[]
 
   @@unique([name, user_id])
+}
+
+model Analytics {
+  id          String  @id @default(uuid())
+  referer     String
+  path        String
+  ip          String
+  browser     String
+  browserLang String
+  os          String
+  osVer       String
+  device      String
+  deviceModel String
+  deviceType  String
+  countryCode String
+  countryName String
+  Link        Link?   @relation(fields: [linkId], references: [id])
+  linkId      String?
 }
