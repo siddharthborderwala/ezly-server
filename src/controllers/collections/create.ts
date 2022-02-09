@@ -9,12 +9,13 @@ export const createCollection =
   async (request: FastifyRequest, reply: FastifyReply) => {
     const { id }: { id: string } = request.requestContext.get('user');
 
-    const { name = '' } = request.body as CreateCollectionType;
+    let { name = '' } = request.body as CreateCollectionType;
+    name = name.trim();
 
     try {
       const collections = await fastify.prisma.collection.findMany({
         where: {
-          name: name.trim(),
+          name,
           user_id: id,
         },
       });
