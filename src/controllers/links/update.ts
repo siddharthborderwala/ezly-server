@@ -38,7 +38,9 @@ export const updateLink =
         },
       });
 
-      return reply.status(201).send('url updated successfully');
+      return reply.status(201).send({
+        msg: 'url updated successfully',
+      });
     } catch (err) {
       return reply.badRequest('error in updating link');
     }
