@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { register, login, logout } from '../controllers/authentication';
+import { register, login, logout, getme } from '../controllers/authentication';
 
 const authResponse = {
   200: {
@@ -58,6 +58,14 @@ const loginOpts = {
 };
 
 const AuthenticationRouter = async (fastify: FastifyInstance) => {
+  fastify.get(
+    '/me',
+    {
+      preHandler: [fastify.verifyJWT],
+    },
+    getme(fastify)
+  );
+
   fastify.post('/register', registerOpts, register(fastify));
 
   fastify.post('/login', loginOpts, login(fastify));

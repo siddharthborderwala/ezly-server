@@ -38,11 +38,14 @@ const authPlugin: FastifyPluginAsync = fp(
         let payload: { id: string };
 
         try {
-          const res = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+          const res = jwt.verify(
+            token.trim(),
+            process.env.JWT_SECRET!
+          ) as JwtPayload;
           payload = {
             id: res.id as string,
           };
-        } catch {
+        } catch (error) {
           return reply.unauthorized('malformed token');
         }
 
@@ -50,21 +53,9 @@ const authPlugin: FastifyPluginAsync = fp(
           return reply.unauthorized('not authorized');
         }
 
-        try {
-          const user = await server.prisma.user.findUnique({
-            where: {
-              id: payload.id,
-            },
-          });
-
-          if (!user) {
-            return reply.notFound('user not found');
-          }
-
-          request.requestContext.set('user', { id: user.id });
-        } catch (err) {
-          reply.notFound('user not found');
-        }
+        request.requestContext.set('user', {
+          id: payload.id,
+        });
       }
     );
   }

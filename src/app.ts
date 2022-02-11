@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 import Fastify from 'fastify';
 import sensible from 'fastify-sensible';
 import cookie from 'fastify-cookie';
@@ -20,7 +23,7 @@ const app = Fastify({
 
 app.register(cors, {
   origin: (origin, cb) => {
-    if (process.env.NODE_ENV === 'development' && /localhost/.test(origin)) {
+    if (process.env.NODE_ENV === 'development') {
       cb(null, true);
       return;
     }
@@ -68,12 +71,16 @@ app.register(authPlugin);
 app.register(prismaPlugin);
 app.register(redisPlugin);
 
-app.get('/', async (req, reply) => {
+app.get('/', (_, reply) => {
   reply.status(200).send('hello world');
 });
 
-app.get('/ping', async (req, reply) => {
+app.get('/ping', (_, reply) => {
   reply.status(200).send('pong');
+});
+
+app.get('/favicon.ico', (_, reply) => {
+  reply.notFound();
 });
 
 app.register(AuthenticationRouter, {
@@ -92,7 +99,7 @@ app.register(AnalyticsRoute, {
   prefix: '/api/v1/track',
 });
 
-app.get('/:alias', async (req, reply) => {
+app.get('/:alias', (req, reply) => {
   console.log(req.params);
   reply.status(200).send(req.params);
 });
