@@ -32,7 +32,9 @@ export const deleteLink =
         },
       });
 
-      return reply.status(200).send('link deleted successfully');
+      return reply.status(200).send({
+        msg: 'link deleted successfully',
+      });
     } catch (err) {
       return reply.badRequest('error while deleting link');
     }

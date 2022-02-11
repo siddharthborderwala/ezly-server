@@ -12,6 +12,7 @@ const CollectionRouter = async (
   options: Record<any, any>
 ) => {
   fastify.get('/:collectionId', getOneCollection(fastify));
+
   fastify.get(
     '/all',
     {

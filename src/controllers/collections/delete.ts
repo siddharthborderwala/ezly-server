@@ -50,7 +50,9 @@ export const deleteCollection =
         },
       });
 
-      return reply.status(200).send('collection deleted successfully');
+      return reply.status(200).send({
+        msg: 'collection deleted successfully',
+      });
     } catch (err) {
       return reply.badRequest('error while deleting collection');
     }
