@@ -15,6 +15,7 @@ import AuthenticationRouter from './routes/authentication';
 import LinksRouter from './routes/links';
 import CollectionRouter from './routes/collections';
 import AnalyticsRoute from './routes/analytics';
+import ImageUploadRouter from './routes/image-upload';
 
 const app = Fastify({
   logger:
@@ -97,6 +98,10 @@ app.register(CollectionRouter, {
 
 app.register(AnalyticsRoute, {
   prefix: '/api/v1/track',
+});
+
+app.register(ImageUploadRouter, {
+  prefix: '/api/v1/image',
 });
 
 app.get('/:alias', (req, reply) => {
