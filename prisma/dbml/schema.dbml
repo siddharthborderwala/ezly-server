@@ -1,0 +1,60 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  password String [not null]
+  email String [unique, not null]
+  collections Collection [not null]
+  links Link [not null]
+}
+
+Table Link {
+  id String [pk]
+  url String [not null]
+  short_url String [unique, not null]
+  collection Collection [not null]
+  collection_id String [not null]
+  user User [not null]
+  user_id String [not null]
+  Analytics Analytics [not null]
+}
+
+Table Collection {
+  id String [pk]
+  name String [not null]
+  user User [not null]
+  user_id String [not null]
+  links Link [not null]
+
+  indexes {
+    (name, user_id) [unique]
+  }
+}
+
+Table Analytics {
+  id String [pk]
+  referer String [not null]
+  path String [not null]
+  ip String [not null]
+  browser String [not null]
+  browserLang String [not null]
+  os String [not null]
+  osVer String [not null]
+  device String [not null]
+  deviceModel String [not null]
+  deviceType String [not null]
+  countryCode String [not null]
+  countryName String [not null]
+  Link Link
+  linkId String
+}
+
+Ref: Link.collection_id > Collection.id
+
+Ref: Link.user_id > User.id
+
+Ref: Collection.user_id > User.id
+
+Ref: Analytics.linkId > Link.id
