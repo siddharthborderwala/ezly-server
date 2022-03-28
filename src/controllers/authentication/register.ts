@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import { createAndSignJWT } from '../../util/jwt';
+import { prisma, PrismaClient } from '@prisma/client';
 
 type RegisterBodyType = {
   email: string;
@@ -42,18 +43,29 @@ export const register =
     const passwordHash = await bcrypt.hash(password, await bcrypt.genSalt());
 
     try {
-      const user = await fastify.prisma.user.create({
-        data: {
-          email: email,
-          password: passwordHash,
-        },
-      });
+      const user = await fastify.prisma.$transaction(async (prisma) => {
+        const user = await prisma.user.create({
+          data: {
+            email: email,
+            password: passwordHash,
+          },
+        });
 
-      await fastify.prisma.collection.create({
-        data: {
-          name: 'general',
-          user_id: user.id,
-        },
+        await prisma.collection.create({
+          data: {
+            name: 'general',
+            user_id: user.id,
+          },
+        });
+
+        await prisma.collection.create({
+          data: {
+            name: 'profile-page',
+            user_id: user.id,
+          },
+        });
+
+        return user;
       });
 
       const token = createAndSignJWT({ id: user.id });
