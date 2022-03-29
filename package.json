@@ -11,7 +11,8 @@
     "test": "tap --ts --reporter=list --no-check-coverage tests/**/*.ts",
     "prisma:dev": "dotenv -e .env.development npx prisma",
     "prisma:test": "dotenv -e .env.test npx prisma",
-    "prisma:push": "dotenv -e .env.development npx prisma db push"
+    "prisma:push": "dotenv -e .env.development npx prisma db push",
+    "prisma:seed": "yarn prisma:push && yarn prisma:dev db seed"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -55,5 +56,8 @@
     "tedis": "^0.1.12",
     "ua-parser-js": "^1.0.2",
     "validator": "^13.7.0"
+  },
+  "prisma": {
+    "seed": "dotenv -e .env.development ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   }
 }
