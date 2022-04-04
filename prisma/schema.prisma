@@ -1,5 +1,5 @@
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
     previewFeatures = ["interactiveTransactions"]
 }
 
@@ -55,6 +55,6 @@ model Analytics {
     deviceType  String
     countryCode String
     countryName String
-    Link        Link?   @relation(fields: [linkId], references: [id])
-    linkId      String?
+    Link        Link?   @relation(fields: [link_id], references: [id])
+    link_id     String?
 }
