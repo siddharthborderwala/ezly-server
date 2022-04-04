@@ -15,8 +15,7 @@ async function processJSON(_data: Queue.Job) {
   // upload file to s3
 
   // maybe update on db ?
-
-  await sleep(2000);
+  await sleep(20000);
   return {
     id: _data.id,
     msg: 'done',
@@ -27,8 +26,8 @@ profilePageQueue.process(function (job) {
   return processJSON(job.data);
 });
 
-function updateProfilePage(data: any) {
-  profilePageQueue.add(data);
+async function updateProfilePage(data: any) {
+  return await profilePageQueue.add(data);
 }
 
 export { profilePageQueue, updateProfilePage };

@@ -21,28 +21,34 @@ import { FastifyAdapter } from '@bull-board/fastify';
 import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { profilePageQueue, updateProfilePage } from './util/queue';
+import TaskQueueRouter from './routes/task-queue';
 
 const app = Fastify({
   logger:
     process.env.NODE_ENV === 'development' ? { prettyPrint: true } : false,
 });
 
-const serverAdapter = new FastifyAdapter();
-createBullBoard({
-  queues: [new BullAdapter(profilePageQueue)],
-  serverAdapter,
-});
+if (process.env.NODE_ENV === 'development') {
+  const serverAdapter = new FastifyAdapter();
 
-serverAdapter.setBasePath('/taskui');
+  createBullBoard({
+    queues: [new BullAdapter(profilePageQueue)],
+    serverAdapter,
+  });
 
-app.register(serverAdapter.registerPlugin(), {
-  prefix: 'taskui',
-  basePath: 'taskui',
-});
+  serverAdapter.setBasePath('/taskui');
 
-app.post('/task', (req, reply) => {
-  updateProfilePage(req.body);
-  reply.send('ok');
+  app.register(serverAdapter.registerPlugin(), {
+    prefix: 'taskui',
+    basePath: 'taskui',
+  });
+}
+
+app.post('/task', async (req, reply) => {
+  const data = await updateProfilePage(req.body);
+  reply.send({
+    data,
+  });
 });
 
 app.register(cors, {
@@ -126,6 +132,10 @@ app.register(AnalyticsRoute, {
 
 app.register(ImageUploadRouter, {
   prefix: '/api/v1/image',
+});
+
+app.register(TaskQueueRouter, {
+  prefix: '/api/v1/task',
 });
 
 app.get('/:alias', (req, reply) => {
