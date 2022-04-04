@@ -17,9 +17,32 @@ import CollectionRouter from './routes/collections';
 import AnalyticsRoute from './routes/analytics';
 import ImageUploadRouter from './routes/image-upload';
 
+import { FastifyAdapter } from '@bull-board/fastify';
+import { createBullBoard } from '@bull-board/api';
+import { BullAdapter } from '@bull-board/api/bullAdapter';
+import { profilePageQueue, updateProfilePage } from './util/queue';
+
 const app = Fastify({
   logger:
     process.env.NODE_ENV === 'development' ? { prettyPrint: true } : false,
+});
+
+const serverAdapter = new FastifyAdapter();
+createBullBoard({
+  queues: [new BullAdapter(profilePageQueue)],
+  serverAdapter,
+});
+
+serverAdapter.setBasePath('/taskui');
+
+app.register(serverAdapter.registerPlugin(), {
+  prefix: 'taskui',
+  basePath: 'taskui',
+});
+
+app.post('/task', (req, reply) => {
+  updateProfilePage(req.body);
+  reply.send('ok');
 });
 
 app.register(cors, {
@@ -38,6 +61,7 @@ app.register(cors, {
     cb(new Error('Not allowed'), false);
   },
 });
+
 app.register(sensible);
 app.register(cookie, {
   secret: process.env.COOKIE_SECRET,
