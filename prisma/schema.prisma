@@ -28,7 +28,7 @@ model Link {
     collection_id String
     user          User        @relation(fields: [user_id], references: [id])
     user_id       String
-    Analytics     Analytics[]
+    analytics     Analytics[]
 }
 
 model Collection {
@@ -55,6 +55,6 @@ model Analytics {
     deviceType  String
     countryCode String
     countryName String
-    Link        Link?   @relation(fields: [link_id], references: [id])
+    link        Link?   @relation(fields: [link_id], references: [id])
     link_id     String?
 }
