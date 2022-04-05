@@ -9,16 +9,16 @@ const ImageUploadRouter = async (
   options: Record<any, any>
 ) => {
   fastify.get('/:ext', async (request: FastifyRequest, reply: FastifyReply) => {
+    let { ext = '' }: any = request.params;
+    ext = ext.trim();
+    console.log('extension => ', ext);
+
+    const command = new PutObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `${nanoid()}.${ext}`,
+    });
+
     try {
-      let { ext = '' }: any = request.params;
-      ext = ext.trim();
-      console.log('extension => ', ext);
-
-      const command = new PutObjectCommand({
-        Bucket: 'ezly-file-upload-service',
-        Key: `${nanoid()}.${ext}`,
-      });
-
       const url = await getSignedUrl(S3Client, command, {
         expiresIn: 3600,
         signingRegion: 'ap-south-1',

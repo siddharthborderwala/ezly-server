@@ -17,10 +17,34 @@ import CollectionRouter from './routes/collections';
 import AnalyticsRoute from './routes/analytics';
 import ImageUploadRouter from './routes/image-upload';
 
+import { FastifyAdapter } from '@bull-board/fastify';
+import { createBullBoard } from '@bull-board/api';
+import { BullAdapter } from '@bull-board/api/bullAdapter';
+import { profilePageQueue, updateProfilePage } from './util/queue';
+import TaskQueueRouter from './routes/task-queue';
+import ShortURLRouter from './routes/short-url';
+import ProfilePageRouter from './routes/profile-page';
+
 const app = Fastify({
   logger:
     process.env.NODE_ENV === 'development' ? { prettyPrint: true } : false,
 });
+
+if (process.env.NODE_ENV === 'development') {
+  const serverAdapter = new FastifyAdapter();
+
+  createBullBoard({
+    queues: [new BullAdapter(profilePageQueue)],
+    serverAdapter,
+  });
+
+  serverAdapter.setBasePath('/taskui');
+
+  app.register(serverAdapter.registerPlugin(), {
+    prefix: 'taskui',
+    basePath: 'taskui',
+  });
+}
 
 app.register(cors, {
   origin: (origin, cb) => {
@@ -38,6 +62,7 @@ app.register(cors, {
     cb(new Error('Not allowed'), false);
   },
 });
+
 app.register(sensible);
 app.register(cookie, {
   secret: process.env.COOKIE_SECRET,
@@ -47,6 +72,7 @@ app.register(cookie, {
     httpOnly: true,
   },
 });
+
 app.register(fastifyRequestContextPlugin, {
   defaultStoreValues: {
     user: null,
@@ -104,9 +130,14 @@ app.register(ImageUploadRouter, {
   prefix: '/api/v1/image',
 });
 
-app.get('/:alias', (req, reply) => {
-  console.log(req.params);
-  reply.status(200).send(req.params);
+app.register(TaskQueueRouter, {
+  prefix: '/api/v1/task',
 });
+
+app.register(ProfilePageRouter, {
+  prefix: '/u',
+});
+
+app.register(ShortURLRouter);
 
 export default app;
