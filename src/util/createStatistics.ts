@@ -44,5 +44,5 @@ export const createStatistics = async (request: FastifyRequest) => {
 
   // TODO acccess linkID and then store to prisma
 
-  console.log(data);
+  // console.log(data);
 };
