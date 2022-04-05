@@ -6,11 +6,8 @@ const TaskQueueRouter = async (
   options: Record<any, any>
 ) => {
   fastify.post('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    // task queue code here
-    const data = await updateProfilePage(request.body);
-    reply.send({
-      data,
-    });
+    await updateProfilePage(request.body);
+    reply.send('we got your updates, we will update it shortly');
   });
 };
 

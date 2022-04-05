@@ -14,7 +14,7 @@ const ImageUploadRouter = async (
     console.log('extension => ', ext);
 
     const command = new PutObjectCommand({
-      Bucket: 'ezly-file-upload-service',
+      Bucket: process.env.AWS_BUCKET_NAME,
       Key: `${nanoid()}.${ext}`,
     });
 

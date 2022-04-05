@@ -1,8 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { nanoid } from 'nanoid';
+import { Tedis } from 'tedis';
 
 const prisma = new PrismaClient();
+
+const redis = new Tedis({
+  host: '127.0.0.1',
+  port: process.env.REDIS_PORT as unknown as number,
+});
 
 async function createUser(email: string, password: string) {
   const passwordHash = await bcrypt.hash(password, await bcrypt.genSalt());
@@ -36,6 +42,8 @@ async function createUser(email: string, password: string) {
 }
 
 async function clearDB() {
+  await redis.command('FLUSHALL');
+  await prisma.analytics.deleteMany({});
   await prisma.link.deleteMany({});
   await prisma.collection.deleteMany({});
   await prisma.user.deleteMany({});
@@ -53,13 +61,16 @@ async function createCollection(name: string, user_id: string) {
 }
 
 async function createLink(url: string, collection_id: string, user_id: string) {
+  const short_url = nanoid(10);
+
+  await redis.set(short_url, url);
+
   const link = await prisma.link.create({
     data: {
       url: url,
       collection_id: collection_id,
       user_id: user_id,
-      // TODO create alias with link helper
-      short_url: nanoid(10),
+      short_url,
     },
   });
 
@@ -136,6 +147,8 @@ async function main() {
     'India',
     link.id
   );
+
+  redis.close();
 }
 
 main();

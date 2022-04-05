@@ -22,6 +22,8 @@ import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { profilePageQueue, updateProfilePage } from './util/queue';
 import TaskQueueRouter from './routes/task-queue';
+import ShortURLRouter from './routes/short-url';
+import ProfilePageRouter from './routes/profile-page';
 
 const app = Fastify({
   logger:
@@ -43,13 +45,6 @@ if (process.env.NODE_ENV === 'development') {
     basePath: 'taskui',
   });
 }
-
-app.post('/task', async (req, reply) => {
-  const data = await updateProfilePage(req.body);
-  reply.send({
-    data,
-  });
-});
 
 app.register(cors, {
   origin: (origin, cb) => {
@@ -77,6 +72,7 @@ app.register(cookie, {
     httpOnly: true,
   },
 });
+
 app.register(fastifyRequestContextPlugin, {
   defaultStoreValues: {
     user: null,
@@ -138,9 +134,10 @@ app.register(TaskQueueRouter, {
   prefix: '/api/v1/task',
 });
 
-app.get('/:alias', (req, reply) => {
-  console.log(req.params);
-  reply.status(200).send(req.params);
+app.register(ProfilePageRouter, {
+  prefix: '/u',
 });
+
+app.register(ShortURLRouter);
 
 export default app;

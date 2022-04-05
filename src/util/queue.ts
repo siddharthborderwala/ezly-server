@@ -1,6 +1,11 @@
 import Queue from 'bull';
+import { Readable } from 'stream';
+import S3Client from './s3-client';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { Blob } from 'node:buffer';
 
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
+const byteSize = (str: string) => new Blob([str]).size;
 
 const profilePageQueue = new Queue('profile-page', {
   redis: {
@@ -10,15 +15,23 @@ const profilePageQueue = new Queue('profile-page', {
 });
 
 async function processJSON(_data: Queue.Job) {
-  // construct HTML file
+  const tmp = '<html><head><title>hi</title></head><body>Hello</body></html>';
+  const filename = 'sites/profile-page3.html';
+  const readable = Readable.from(tmp);
 
-  // upload file to s3
+  const command = new PutObjectCommand({
+    Key: filename,
+    Body: readable,
+    Bucket: process.env.AWS_BUCKET_NAME,
+    ContentLength: byteSize(tmp),
+  });
 
-  // maybe update on db ?
-  await sleep(20000);
+  const res = await S3Client.send(command);
+
   return {
     id: _data.id,
     msg: 'done',
+    res,
   };
 }
 
