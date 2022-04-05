@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import { linkHelper } from '../src/util/link';
+import { nanoid } from 'nanoid';
 
 const prisma = new PrismaClient();
 
@@ -59,6 +59,7 @@ async function createLink(url: string, collection_id: string, user_id: string) {
       collection_id: collection_id,
       user_id: user_id,
       // TODO create alias with link helper
+      short_url: nanoid(10),
     },
   });
 
@@ -93,7 +94,7 @@ async function createAnalytics(
       deviceType: deviceType,
       countryCode: countryCode,
       countryName: countryName,
-      linkId: linkId,
+      link_id: linkId,
     },
   });
 
@@ -118,6 +119,21 @@ async function main() {
     'desktop',
     'US',
     'United States',
+    link.id
+  );
+  const analytics1 = await createAnalytics(
+    'direct',
+    '',
+    '142.250.125.111',
+    'Firefox',
+    'en-US',
+    'Windows',
+    '10',
+    '',
+    '',
+    'mobile',
+    'IN',
+    'India',
     link.id
   );
 }
