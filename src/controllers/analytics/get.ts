@@ -10,10 +10,13 @@ export const getStats =
           short_url: alias,
         },
         include: {
-          Analytics: true,
+          analytics: true,
         },
       });
       // console.log(stats);
+      if (!stats) {
+        reply.status(404).send('Data not found');
+      }
       return reply.status(200).send({
         stats,
       });
