@@ -33,7 +33,7 @@ export const createStatistics = async (request: FastifyRequest) => {
     ] = response.split(';');
 
     if (status === '1') {
-      data.countryCode = countryCodeTwoLetters;
+      data.countryCode = countryCodeThreeLetters;
       data.countryName = countryName;
     } else {
       data.countryCode = data.countryName = 'unknown';

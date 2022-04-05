@@ -1,13 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-
-type GetresParamsType = {
-  alias: string;
-};
+import { calcAnalytics } from '../../util/calculateAnalytics';
 
 export const getStats =
   (fastify: FastifyInstance) =>
   async (request: FastifyRequest, reply: FastifyReply) => {
-    const { alias } = request.params as GetresParamsType;
+    const { alias } = request.params as { alias: string };
     try {
       const res = await fastify.prisma.link.findFirst({
         where: {
@@ -27,20 +24,7 @@ export const getStats =
         alias: res?.short_url,
         clicks: res?.analytics.length,
         collection: res?.collection.name,
-        analytics: res?.analytics.map((item: any) => ({
-          id: item.id,
-          referer: item.referer,
-          path: item.path,
-          browser: item.browser,
-          browserLang: item.browserLang,
-          os: item.os,
-          osVer: item.osVer,
-          device: item.device,
-          deviceModel: item.deviceModel,
-          deviceType: item.deviceType,
-          countryCode: item.countryCode,
-          countryName: item.countryName,
-        })),
+        analytics: calcAnalytics(res!.analytics),
       };
 
       return reply.status(200).send({
