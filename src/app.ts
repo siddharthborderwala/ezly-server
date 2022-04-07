@@ -1,6 +1,3 @@
-import fs from 'fs';
-import path from 'path';
-
 import Fastify from 'fastify';
 import sensible from 'fastify-sensible';
 import cookie from 'fastify-cookie';
