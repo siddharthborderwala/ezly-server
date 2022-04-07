@@ -5,7 +5,13 @@ const AnalyticsRoute = async (
   fastify: FastifyInstance,
   options: Record<any, any>
 ) => {
-  fastify.get('/:alias', getStats(fastify));
+  fastify.get(
+    '/:alias',
+    {
+      preHandler: [fastify.verifyJWT],
+    },
+    getStats(fastify)
+  );
 };
 
 export default AnalyticsRoute;
