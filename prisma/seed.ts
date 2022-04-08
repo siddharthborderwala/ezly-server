@@ -128,7 +128,7 @@ async function main() {
     '',
     '',
     'desktop',
-    'US',
+    'USA',
     'United States',
     link.id
   );
@@ -143,7 +143,7 @@ async function main() {
     '',
     '',
     'mobile',
-    'IN',
+    'IND',
     'India',
     link.id
   );
