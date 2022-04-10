@@ -10,14 +10,15 @@ const redis = new Tedis({
   port: process.env.REDIS_PORT as unknown as number,
 });
 
-async function createUser(email: string, password: string) {
+async function createUser(email: string, password: string, username: string) {
   const passwordHash = await bcrypt.hash(password, await bcrypt.genSalt());
 
   const user = await prisma.$transaction(async (prisma) => {
     const user = await prisma.user.create({
       data: {
-        email: email,
+        email,
         password: passwordHash,
+        username,
       },
     });
 
@@ -114,7 +115,7 @@ async function createAnalytics(
 
 async function main() {
   await clearDB();
-  const user = await createUser('user@test.com', '123456');
+  const user = await createUser('user@test.com', '123456', 'randomname');
   const collection = await createCollection('instagram', user.id);
   const link = await createLink('www.instagram.com', collection.id, user.id);
   const analytics = await createAnalytics(
