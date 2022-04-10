@@ -5,7 +5,6 @@ const URL_LENGTH = 10;
 
 export const linkHelper = (redis: Tedis) => {
   return {
-    // TODO Maybe add check if shortid generates identical, very unlikely tho
     async create(url: string) {
       const id = nanoid(URL_LENGTH);
       await redis.set(id, url);

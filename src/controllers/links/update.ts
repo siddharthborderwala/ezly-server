@@ -29,7 +29,8 @@ export const updateLink =
       const linkClient = linkHelper(fastify.redis);
 
       await linkClient.update(link.short_url, link.url);
-      await fastify.prisma.link.update({
+
+      const updatedLink = await fastify.prisma.link.update({
         where: {
           id: linkId,
         },
@@ -40,6 +41,7 @@ export const updateLink =
 
       return reply.status(201).send({
         msg: 'url updated successfully',
+        link: updatedLink,
       });
     } catch (err) {
       return reply.badRequest('error in updating link');
