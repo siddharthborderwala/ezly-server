@@ -24,18 +24,23 @@ const authPlugin: FastifyPluginAsync = fp(
       'verifyJWT',
       async (request: FastifyRequest, reply: FastifyReply) => {
         const authorizationHeader = request.headers.authorization;
-        const tokenCookie = request.cookies.token;
+        const cookieResult = reply.unsignCookie(request.cookies.token);
 
-        if (!authorizationHeader && !tokenCookie) {
+        if (!authorizationHeader && !cookieResult.valid) {
           return reply.badRequest('authentication token not found');
         }
+
+        console.log(request.headers, cookieResult);
 
         // cookie takes precedence
         // as on the frontend we set the http secure cookies
         const token =
-          tokenCookie ?? authorizationHeader?.replace('Bearer ', '');
+          cookieResult.value ??
+          (authorizationHeader?.replace('Bearer ', '') as string);
 
         let payload: { id: string };
+
+        console.log(token);
 
         try {
           const res = jwt.verify(
