@@ -30,8 +30,6 @@ const authPlugin: FastifyPluginAsync = fp(
           return reply.badRequest('authentication token not found');
         }
 
-        console.log(request.headers, cookieResult);
-
         // cookie takes precedence
         // as on the frontend we set the http secure cookies
         const token =
@@ -39,8 +37,6 @@ const authPlugin: FastifyPluginAsync = fp(
           (authorizationHeader?.replace('Bearer ', '') as string);
 
         let payload: { id: string };
-
-        console.log(token);
 
         try {
           const res = jwt.verify(
