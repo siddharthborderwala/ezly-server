@@ -33,8 +33,7 @@ export const createCollection =
 
       return reply.status(201).send({
         msg: `collection ${name} created successfully`,
-        name,
-        collectionId: collection.id,
+        collection,
       });
     } catch (err) {
       return reply.badRequest('error while creating collection');

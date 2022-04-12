@@ -3,12 +3,14 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 export const getOneCollection =
   (fastify: FastifyInstance) =>
   async (request: FastifyRequest, reply: FastifyReply) => {
-    const { collectionId }: any = request.params;
+    const { collectionName }: any = request.params;
+    const { id }: { id: string } = request.requestContext.get('user');
 
     try {
       const collection = await fastify.prisma.collection.findFirst({
         where: {
-          id: collectionId,
+          name: collectionName,
+          user_id: id,
         },
         include: {
           links: true,

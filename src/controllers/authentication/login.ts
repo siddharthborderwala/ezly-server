@@ -22,13 +22,17 @@ export const login =
         where: { email },
       });
 
+      if (!user) {
+        return reply.unauthorized('no such user exists');
+      }
+
       const isValidPassword = await bcrypt.compare(password, user?.password!);
 
       if (!isValidPassword) {
-        reply.unauthorized('please check the email and password');
+        return reply.unauthorized('please check the email and password');
       }
 
-      const token = createAndSignJWT({ id: user!.id });
+      const token = createAndSignJWT({ id: user.id });
 
       return reply.status(200).setCookie('token', token).send({
         user: { email },

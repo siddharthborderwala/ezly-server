@@ -19,7 +19,7 @@ const ShortURLRouter = async (
       return reply.status(404).send('not found :(');
     }
 
-    // TODO Check for https in the beginning
+    // TODO Check for https in the beginning, else it will redirect to our own site
     reply.code(302).redirect(`https://${longerUrl}`);
   });
 };

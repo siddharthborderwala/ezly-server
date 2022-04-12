@@ -26,6 +26,15 @@ export const updateCollection =
           .send('user not authorized to update collection');
       }
 
+      if (
+        collections[0].name === 'general' ||
+        collections[0].name === 'profile-page'
+      ) {
+        return reply
+          .status(401)
+          .send('user not authorized to update this collection');
+      }
+
       const collection = await fastify.prisma.collection.update({
         data: {
           name: collectionName,

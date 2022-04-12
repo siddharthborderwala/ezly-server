@@ -8,12 +8,13 @@ type RegisterBodyType = {
   email: string;
   password: string;
   passwordConfirmation: string;
+  username: string;
 };
 
 export const register =
   (fastify: FastifyInstance) =>
   async (request: FastifyRequest, reply: FastifyReply) => {
-    const { email, password, passwordConfirmation } =
+    const { email, password, passwordConfirmation, username } =
       request.body as RegisterBodyType;
 
     if (!email) {
@@ -28,8 +29,18 @@ export const register =
       return reply.badRequest('passwordConfirmation required');
     }
 
+    if (!username) {
+      return reply.badRequest('username is required');
+    }
+
     if (!validator.isEmail(email)) {
       return reply.badRequest('invalid email');
+    }
+
+    if (!validator.isAlphanumeric(username)) {
+      return reply.badRequest(
+        'only alphanumeric characters allowed in the username, no spaces'
+      );
     }
 
     if (password !== passwordConfirmation) {
@@ -46,8 +57,9 @@ export const register =
       const user = await fastify.prisma.$transaction(async (prisma) => {
         const user = await prisma.user.create({
           data: {
-            email: email,
+            email,
             password: passwordHash,
+            username,
           },
         });
 
@@ -76,12 +88,14 @@ export const register =
       });
     } catch (error) {
       // is it an error from prisma/db
-      console.log(error);
       const errcode = (error as any).code;
       if (errcode) {
         switch (errcode) {
-          case 'P2002':
-            return reply.badRequest('account with email id already exists');
+          case 'P2002': {
+            return reply.badRequest(
+              `account with ${(error as any).meta.target} already exists`
+            );
+          }
           default:
             return reply.badRequest();
         }

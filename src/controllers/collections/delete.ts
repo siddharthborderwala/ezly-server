@@ -26,9 +26,10 @@ export const deleteCollection =
 
       const collection = collections[0];
 
-      // TODO return error properly
       if (collection.name === 'general' || collection.name === 'profile-page') {
-        throw new Error('cannot delete these collections');
+        return reply.status(401).send({
+          msg: 'user not authorized to delete collection',
+        });
       }
 
       const links = await fastify.prisma.link.findMany({
@@ -61,6 +62,8 @@ export const deleteCollection =
         msg: 'collection deleted successfully',
       });
     } catch (err) {
-      return reply.badRequest('error while deleting collection');
+      return reply.status(401).send({
+        msg: 'error while deleting collection',
+      });
     }
   };

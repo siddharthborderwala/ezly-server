@@ -15,8 +15,9 @@ export const getStats =
           collection: true,
         },
       });
+
       if (!res) {
-        reply.status(404).send('Data not found');
+        return reply.status(404).send('Data not found');
       }
 
       const stats = {

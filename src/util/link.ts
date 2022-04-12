@@ -1,11 +1,11 @@
 import { Tedis } from 'tedis';
 import { nanoid } from 'nanoid';
+import validator from 'validator';
 
 const URL_LENGTH = 10;
 
 export const linkHelper = (redis: Tedis) => {
   return {
-    // TODO Maybe add check if shortid generates identical, very unlikely tho
     async create(url: string) {
       const id = nanoid(URL_LENGTH);
       await redis.set(id, url);
@@ -18,7 +18,10 @@ export const linkHelper = (redis: Tedis) => {
       return redis.set(alias, url);
     },
     validateAlias(alias: string) {
-      return alias.length >= 3;
+      return (
+        ((alias.length >= 3) as boolean) &&
+        (validator.isAlphanumeric(alias) as boolean)
+      );
     },
     exists(key: string) {
       return redis.exists(key);
