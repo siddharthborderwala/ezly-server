@@ -1,5 +1,6 @@
 import { Tedis } from 'tedis';
 import { nanoid } from 'nanoid';
+import validator from 'validator';
 
 const URL_LENGTH = 10;
 
@@ -17,7 +18,10 @@ export const linkHelper = (redis: Tedis) => {
       return redis.set(alias, url);
     },
     validateAlias(alias: string) {
-      return alias.length >= 3;
+      return (
+        ((alias.length >= 3) as boolean) &&
+        (validator.isAlphanumeric(alias) as boolean)
+      );
     },
     exists(key: string) {
       return redis.exists(key);

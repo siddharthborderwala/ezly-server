@@ -38,7 +38,9 @@ export const createLink =
 
       if (isAlias) {
         if (!linkClient.validateAlias(alias)) {
-          return reply.badRequest('incorrect alias provided');
+          return reply.badRequest(
+            'incorrect alias provided, use only alphanumeric and length should be greater than 3'
+          );
         }
 
         const exists = await linkClient.exists(alias);
