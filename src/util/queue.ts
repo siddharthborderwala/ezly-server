@@ -3,8 +3,8 @@ import { Readable } from 'stream';
 import S3Client from './s3-client';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { Blob } from 'node:buffer';
+import renderHTML, { Body } from 'ezly-render-html';
 
-const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 const byteSize = (str: string) => new Blob([str]).size;
 
 const profilePageQueue = new Queue('profile-page', {
@@ -14,22 +14,20 @@ const profilePageQueue = new Queue('profile-page', {
   },
 });
 
-async function processJSON(_data: Queue.Job) {
-  const tmp = '<html><head><title>hi</title></head><body>Hello</body></html>';
-  const filename = 'sites/profile-page3.html';
-  const readable = Readable.from(tmp);
+async function processJSON(data: Queue.Job<Body>) {
+  const page = renderHTML(data.data);
 
   const command = new PutObjectCommand({
-    Key: filename,
-    Body: readable,
+    Key: `sites/${data.data.meta.username}-profile-page.html`,
+    Body: Readable.from(page),
     Bucket: process.env.AWS_BUCKET_NAME,
-    ContentLength: byteSize(tmp),
+    ContentLength: byteSize(page),
   });
 
   const res = await S3Client.send(command);
 
   return {
-    id: _data.id,
+    id: data.id,
     msg: 'done',
     res,
   };
@@ -39,7 +37,7 @@ profilePageQueue.process(function (job) {
   return processJSON(job.data);
 });
 
-async function updateProfilePage(data: any) {
+async function updateProfilePage(data: Body) {
   return await profilePageQueue.add(data);
 }
 
