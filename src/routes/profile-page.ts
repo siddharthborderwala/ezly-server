@@ -20,7 +20,7 @@ const ProfilePageRouter = async (
 
     const command = new GetObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `sites/${username}.html`,
+      Key: `sites/${username}-profile-page.html`,
     });
 
     try {
