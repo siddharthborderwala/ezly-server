@@ -13,8 +13,6 @@ const ShortURLRouter = async (
     const { url } = request.params as { url: string };
     const longerUrl = await fastify.redis.get(url);
 
-    console.log(' from redis', longerUrl);
-
     if (!longerUrl) {
       return reply.status(404).send('not found :(');
     }

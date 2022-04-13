@@ -11,7 +11,6 @@ const ImageUploadRouter = async (
   fastify.get('/:ext', async (request: FastifyRequest, reply: FastifyReply) => {
     let { ext = '' }: any = request.params;
     ext = ext.trim();
-    console.log('extension => ', ext);
 
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
