@@ -21,11 +21,11 @@ export const getStats =
       }
 
       const stats = {
-        url: res?.url,
-        alias: res?.short_url,
-        clicks: res?.analytics.length,
+        url: res.url,
+        alias: res.short_url,
+        clicks: res.analytics.length,
         collection: res?.collection.name,
-        analytics: calcAnalytics(res!.analytics),
+        analytics: res.analytics.length > 0 ? calcAnalytics(res.analytics) : [],
       };
 
       return reply.status(200).send({
