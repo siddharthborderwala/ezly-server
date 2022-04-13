@@ -42,7 +42,5 @@ export const createStatistics = async (request: FastifyRequest) => {
     data.countryCode = data.countryName = 'unknown';
   }
 
-  // TODO acccess linkID and then store to prisma
-
-  console.log(data);
+  return data;
 };
