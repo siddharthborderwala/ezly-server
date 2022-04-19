@@ -42,14 +42,15 @@ const ShortURLRouter = async (
 
   fastify.get('/:url', async (request, reply) => {
     const { url } = request.params as { url: string };
-    const longerUrl = await fastify.redis.get(url);
+    let longerUrl = (await fastify.redis.get(url)) as string;
 
     if (!longerUrl) {
       return reply.status(404).send('not found :(');
     }
 
-    // TODO Check for https in the beginning, else it will redirect to our own site
-    reply.code(302).redirect(`https://${longerUrl}`);
+    reply
+      .code(302)
+      .redirect(`https://${longerUrl.replace(/^https?:\/\//, '')}`);
   });
 };
 
