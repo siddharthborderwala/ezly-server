@@ -4,6 +4,10 @@ import validator from 'validator';
 
 const URL_LENGTH = 10;
 
+export const removeHttp = (url: string) => {
+  return url.replace(/^https?:\/\//, '');
+};
+
 export const linkHelper = (redis: Tedis) => {
   return {
     async create(url: string) {
