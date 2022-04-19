@@ -120,7 +120,7 @@ app.register(CollectionRouter, {
 });
 
 app.register(AnalyticsRoute, {
-  prefix: '/api/v1/track',
+  prefix: '/api/v1/stats',
 });
 
 app.register(ImageUploadRouter, {
