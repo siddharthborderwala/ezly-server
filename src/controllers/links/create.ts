@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { linkHelper } from './../../util/link';
+import { linkHelper, removeHttp } from './../../util/link';
 
 type CreateLinkType = {
   isAlias: boolean;
@@ -18,6 +18,10 @@ export const createLink =
       collectionName = 'general',
       alias = '',
     } = request.body as CreateLinkType;
+
+    let cleanedUrl = removeHttp(url);
+
+    console.log('cleaned url = ', cleanedUrl);
 
     try {
       const linkClient = linkHelper(fastify.redis);
@@ -55,7 +59,7 @@ export const createLink =
             user_id: id,
             collection_id: collection.id,
             short_url: alias,
-            url,
+            url: cleanedUrl,
           },
         });
 
@@ -67,7 +71,7 @@ export const createLink =
             user_id: id,
             collection_id: collection.id,
             short_url: shortUrl,
-            url,
+            url: cleanedUrl,
           },
         });
       }
@@ -75,7 +79,7 @@ export const createLink =
       return reply.status(201).send({
         msg: 'short url created successfully',
         shortUrl,
-        url,
+        url: cleanedUrl,
         collectionId: collection.id,
       });
     } catch (err) {
