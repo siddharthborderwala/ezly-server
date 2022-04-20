@@ -37,6 +37,8 @@ const ShortURLRouter = async (
       } catch (error) {
         console.log('error while creating statistics', error);
       }
+    } else {
+      console.log('link id not found');
     }
   });
 
