@@ -8,10 +8,10 @@ export const createStatistics = async (request: FastifyRequest) => {
   const data = {
     referer: request.headers.referer ?? 'direct',
     path: request.headers.path ?? '',
-    ip: 
-        request.headers['x-real-ip'] as string??
-        request.headers['x-forwarded-for'] ??
-        request.ip,
+    ip:
+      (request.headers['x-real-ip'] as string) ??
+      (request.headers['x-forwarded-for'] as string) ??
+      request.ip,
     browser: ua.browser.name ?? '',
     browserLang: request.headers['accept-language']?.split(',')[0] ?? '',
     os: ua.os.name ?? '',
