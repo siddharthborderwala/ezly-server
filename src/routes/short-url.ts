@@ -20,7 +20,7 @@ const ShortURLRouter = async (
         await fastify.prisma.analytics.create({
           data: {
             referer: stats.referer,
-            path: stats.path.at(0) || '',
+            path: stats.path.at(0) ?? '',
             ip: stats.ip,
             browser: stats.browser,
             browserLang: stats.browserLang,
