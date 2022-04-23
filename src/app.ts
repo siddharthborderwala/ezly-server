@@ -4,6 +4,9 @@ import cookie from 'fastify-cookie';
 import fastifySwagger from 'fastify-swagger';
 import { fastifyRequestContextPlugin } from 'fastify-request-context';
 import cors from 'fastify-cors';
+import { FastifyAdapter } from '@bull-board/fastify';
+import { createBullBoard } from '@bull-board/api';
+import { BullAdapter } from '@bull-board/api/bullAdapter';
 
 import authPlugin from './plugins/auth';
 import prismaPlugin from './plugins/prisma';
@@ -13,14 +16,11 @@ import LinksRouter from './routes/links';
 import CollectionRouter from './routes/collections';
 import AnalyticsRoute from './routes/analytics';
 import ImageUploadRouter from './routes/image-upload';
-
-import { FastifyAdapter } from '@bull-board/fastify';
-import { createBullBoard } from '@bull-board/api';
-import { BullAdapter } from '@bull-board/api/bullAdapter';
-import { profilePageQueue, updateProfilePage } from './util/queue';
 import TaskQueueRouter from './routes/task-queue';
 import ShortURLRouter from './routes/short-url';
 import ProfilePageRouter from './routes/profile-page';
+import ProfileRouter from './routes/profile';
+import { profilePageQueue } from './util/queue';
 
 const app = Fastify({
   logger:
@@ -117,6 +117,10 @@ app.register(LinksRouter, {
 
 app.register(CollectionRouter, {
   prefix: '/api/v1/collections',
+});
+
+app.register(ProfileRouter, {
+  prefix: '/api/v1/profile',
 });
 
 app.register(AnalyticsRoute, {

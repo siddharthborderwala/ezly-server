@@ -10,7 +10,7 @@ const byteSize = (str: string) => new Blob([str]).size;
 const profilePageQueue = new Queue('profile-page', {
   redis: {
     host: '127.0.0.1',
-    port: process.env.REDIS_PORT as unknown as number,
+    port: parseInt(process.env.REDIS_PORT!),
   },
 });
 

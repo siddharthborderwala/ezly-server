@@ -4,7 +4,7 @@ import { updateProfilePage } from '../util/queue';
 
 const TaskQueueRouter = async (
   fastify: FastifyInstance,
-  options: Record<any, any>
+  _: Record<any, any>
 ) => {
   fastify.post('/', async (request: FastifyRequest, reply: FastifyReply) => {
     await updateProfilePage(request.body as Body);

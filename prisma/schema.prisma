@@ -3,10 +3,6 @@ generator client {
     previewFeatures = ["interactiveTransactions"]
 }
 
-// generator dbml {
-//     provider = "prisma-dbml-generator"
-// }
-
 datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
@@ -19,15 +15,28 @@ model User {
     username    String       @unique
     collections Collection[]
     links       Link[]
+    Profile     Profile[]
+}
+
+model Profile {
+    user     User   @relation(fields: [username], references: [username], onDelete: Cascade)
+    username String @unique
+
+    savedVersion     Int  @default(1)
+    publishedVersion Int?
+
+    body Json?
+
+    @@index([username])
 }
 
 model Link {
     id            String      @id @default(uuid())
     url           String
     short_url     String      @unique
-    collection    Collection  @relation(fields: [collection_id], references: [id])
+    collection    Collection  @relation(fields: [collection_id], references: [id], onDelete: Cascade)
     collection_id String
-    user          User        @relation(fields: [user_id], references: [id])
+    user          User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
     user_id       String
     analytics     Analytics[]
 }
@@ -35,7 +44,7 @@ model Link {
 model Collection {
     id      String @id @default(uuid())
     name    String
-    user    User   @relation(fields: [user_id], references: [id])
+    user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
     user_id String
     links   Link[]
 
@@ -56,6 +65,6 @@ model Analytics {
     deviceType  String
     countryCode String
     countryName String
-    link        Link?   @relation(fields: [link_id], references: [id])
+    link        Link?   @relation(fields: [link_id], references: [id], onDelete: Cascade)
     link_id     String?
 }

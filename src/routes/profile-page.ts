@@ -1,10 +1,10 @@
 import { FastifyInstance } from 'fastify';
 import S3Client from '../util/s3-client';
-import { GetObjectCommand, S3 } from '@aws-sdk/client-s3';
+import { GetObjectCommand } from '@aws-sdk/client-s3';
 
 const ProfilePageRouter = async (
   fastify: FastifyInstance,
-  options: Record<any, any>
+  _: Record<any, any>
 ) => {
   fastify.addHook('onResponse', async (request, reply) => {
     // console.log('request from onResponse hook of profile page', request.params);
@@ -12,10 +12,6 @@ const ProfilePageRouter = async (
   });
 
   fastify.get('/:username', async (request, reply) => {
-    console.log(request.params);
-
-    console.log('hi from profile page route');
-
     const { username } = request.params as { username: string };
 
     const command = new GetObjectCommand({
@@ -27,7 +23,7 @@ const ProfilePageRouter = async (
       const response = await S3Client.send(command);
 
       if (!response.Body) {
-        return reply.status(404).send('username does not exist');
+        return reply.status(404).send('profile not found');
       }
 
       reply
