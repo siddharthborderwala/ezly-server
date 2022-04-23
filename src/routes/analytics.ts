@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { getStats } from '../controllers/analytics';
+import { getStats, overview } from '../controllers/analytics';
 
 const AnalyticsRoute = async (
   fastify: FastifyInstance,
@@ -11,6 +11,14 @@ const AnalyticsRoute = async (
       preHandler: [fastify.verifyJWT],
     },
     getStats(fastify)
+  );
+
+  fastify.get(
+    '/profile/overview',
+    {
+      preHandler: [fastify.verifyJWT],
+    },
+    overview(fastify)
   );
 };
 
