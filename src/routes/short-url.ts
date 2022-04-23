@@ -47,10 +47,27 @@ const ShortURLRouter = async (
     let longerUrl = (await fastify.redis.get(url)) as string;
 
     if (!longerUrl) {
-      return reply.status(404).send('not found :(');
+      try {
+        const link = await fastify.prisma.link.findUnique({
+          where: {
+            short_url: url,
+          },
+        });
+
+        if (link?.url) {
+          longerUrl = link?.url;
+          if (longerUrl) {
+            await fastify.redis.set(url, longerUrl);
+          }
+        }
+      } finally {
+        if (!longerUrl) {
+          return reply.status(404).send('not found :(');
+        }
+      }
     }
 
-    reply
+    return reply
       .code(302)
       .redirect(`https://${longerUrl.replace(/^https?:\/\//, '')}`);
   });

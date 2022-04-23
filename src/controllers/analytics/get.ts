@@ -5,10 +5,12 @@ export const getStats =
   (fastify: FastifyInstance) =>
   async (request: FastifyRequest, reply: FastifyReply) => {
     const { alias } = request.params as { alias: string };
+    const { id }: { id: string } = request.requestContext.get('user');
     try {
       const res = await fastify.prisma.link.findFirst({
         where: {
           short_url: alias,
+          user_id: id,
         },
         include: {
           analytics: true,
