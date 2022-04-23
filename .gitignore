@@ -8,3 +8,4 @@ db-data
 test.http
 yarn-error.log
 build/
+tsconfig.tsbuildinfo
