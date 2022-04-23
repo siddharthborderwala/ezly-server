@@ -17,7 +17,7 @@ export const overview =
         },
       });
 
-      const totalClicks = await fastify.prisma.link.findMany({
+      const userLinks = await fastify.prisma.link.findMany({
         where: {
           user_id: id,
         },
@@ -30,7 +30,7 @@ export const overview =
         },
       });
 
-      const clicks = totalClicks.reduce((acc, curr) => {
+      const clicks = userLinks.reduce((acc, curr) => {
         return acc + curr._count.analytics;
       }, 0);
 
