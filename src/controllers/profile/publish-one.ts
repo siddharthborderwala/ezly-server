@@ -14,8 +14,12 @@ export const publishOneProfile =
         });
 
         if (!profile) {
-          throw 404;
+          throw {
+            code: 404,
+          };
         }
+
+        console.log(profile.body);
 
         await updateProfilePage(profile.body as ProfileBody);
 
@@ -30,10 +34,11 @@ export const publishOneProfile =
       });
 
       return reply.status(200).send({ version });
-    } catch (err) {
-      if (err === 404) {
+    } catch (err: any) {
+      if (err.code === 404) {
         return reply.status(404).send();
       }
+      console.log(err);
       return reply.badRequest('error in getting link');
     }
   };

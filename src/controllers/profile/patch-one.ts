@@ -14,7 +14,9 @@ export const patchOneProfile =
         });
 
         if (!oldProfile) {
-          throw 404;
+          throw {
+            code: 404,
+          };
         }
 
         let updatedProfile = await prisma.profile.update({
@@ -32,8 +34,10 @@ export const patchOneProfile =
       });
 
       return reply.status(200).send({ profile });
-    } catch (err) {
-      if (err === 404) {
+    } catch (err: any) {
+      console.log(err);
+
+      if (err.code === 404) {
         return reply.status(404).send();
       }
       return reply.badRequest('error in getting link');

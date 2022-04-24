@@ -77,6 +77,12 @@ export const register =
           },
         });
 
+	await prisma.profile.create({
+          data: {
+            username: username,
+	  }
+	});
+
         return user;
       });
 

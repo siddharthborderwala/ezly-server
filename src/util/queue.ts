@@ -3,7 +3,7 @@ import { Readable } from 'stream';
 import S3Client from './s3-client';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { Blob } from 'node:buffer';
-import renderHTML, { Body } from 'ezly-render-html';
+import renderHTML, { Body } from './render-html';
 
 const byteSize = (str: string) => new Blob([str]).size;
 
@@ -14,7 +14,7 @@ const profilePageQueue = new Queue('profile-page', {
   },
 });
 
-async function processJSON(data: Queue.Job<Body>) {
+profilePageQueue.process(async (data: Queue.Job<Body>) => {
   const page = renderHTML(data.data);
 
   const command = new PutObjectCommand({
@@ -31,14 +31,10 @@ async function processJSON(data: Queue.Job<Body>) {
     msg: 'done',
     res,
   };
-}
-
-profilePageQueue.process(function (job) {
-  return processJSON(job.data);
 });
 
 async function updateProfilePage(data: Body) {
-  return await profilePageQueue.add(data);
+  await profilePageQueue.add(data);
 }
 
 export { profilePageQueue, updateProfilePage };

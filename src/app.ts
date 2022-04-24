@@ -103,10 +103,6 @@ app.get('/ping', (_, reply) => {
   reply.status(200).send('pong');
 });
 
-app.get('/favicon.ico', (_, reply) => {
-  reply.notFound();
-});
-
 app.register(AuthenticationRouter, {
   prefix: '/api/v1/auth',
 });
