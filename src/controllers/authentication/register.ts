@@ -2,7 +2,19 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import { createAndSignJWT } from '../../util/jwt';
-import { prisma, PrismaClient } from '@prisma/client';
+import { Body } from '../../util/render-html';
+
+const generateDefaultBody = (username: string): Body => ({
+  links: [],
+  socials: [],
+  meta: {
+    background: 'hsla(0, 100%, 100%, 1)',
+    font: 'Inter',
+    username: username,
+    image: `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${username}`,
+    description: '',
+  },
+});
 
 type RegisterBodyType = {
   email: string;
@@ -77,11 +89,12 @@ export const register =
           },
         });
 
-	await prisma.profile.create({
+        await prisma.profile.create({
           data: {
             username: username,
-	  }
-	});
+            body: generateDefaultBody(username),
+          },
+        });
 
         return user;
       });
