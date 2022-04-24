@@ -17,6 +17,7 @@ export const getme =
       reply.status(200).send({
         id: id,
         email: user.email,
+        username: user.username,
       });
     } catch (error) {
       reply.status(400).send('bad request');

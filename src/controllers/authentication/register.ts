@@ -82,10 +82,13 @@ export const register =
 
       const token = createAndSignJWT({ id: user.id });
 
-      return reply.status(201).setCookie('token', token).send({
-        user: { email },
-        token,
-      });
+      return reply
+        .status(201)
+        .setCookie('token', token)
+        .send({
+          user: { email: user.email, id: user.id, username: user.username },
+          token,
+        });
     } catch (error) {
       // is it an error from prisma/db
       const errcode = (error as any).code;

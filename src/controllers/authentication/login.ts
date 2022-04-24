@@ -34,10 +34,13 @@ export const login =
 
       const token = createAndSignJWT({ id: user.id });
 
-      return reply.status(200).setCookie('token', token).send({
-        user: { email },
-        token,
-      });
+      return reply
+        .status(200)
+        .setCookie('token', token)
+        .send({
+          user: { email: user.email, id: user.id, username: user.username },
+          token,
+        });
     } catch (error) {
       return reply.unauthorized('please check the email and password - server');
     }
