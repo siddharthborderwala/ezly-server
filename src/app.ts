@@ -43,10 +43,10 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-app.register(cors, {
-  origin: '*',
-  credentials: true,
-});
+// app.register(cors, {
+//   origin: '*',
+//   credentials: true,
+// });
 
 app.register(sensible);
 app.register(cookie, {
