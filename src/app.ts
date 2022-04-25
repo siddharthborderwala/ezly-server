@@ -44,20 +44,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.register(cors, {
-  origin: (origin, cb) => {
-    const hostname = new URL(origin).hostname;
-    if (
-      hostname === 'localhost' ||
-      hostname === 'app.ezly.tech' ||
-      hostname === 'ezly.tech'
-    ) {
-      //  Request from localhost will pass
-      cb(null, true);
-      return;
-    }
-    // Generate an error on other origins, disabling access
-    cb(new Error('Not allowed'), false);
-  },
+  origin: ['localhost', 'app.ezly.tech', 'ezly.tech'],
   credentials: true,
 });
 
