@@ -3,7 +3,7 @@ import { getStats, overview } from '../controllers/analytics';
 
 const AnalyticsRoute = async (
   fastify: FastifyInstance,
-  options: Record<any, any>
+  _: Record<any, any>
 ) => {
   fastify.get(
     '/:alias',

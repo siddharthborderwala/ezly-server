@@ -34,10 +34,62 @@ export const overview =
         return acc + curr._count.analytics;
       }, 0);
 
-      // TODO - Add profile views
+      const latestLink = await fastify.prisma.link.findFirst({
+        where: {
+          user_id: id,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        select: {
+          id: true,
+          short_url: true,
+          collection: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
 
-      return reply.status(200).send({ collections, links, clicks });
+      const popularLink = await fastify.prisma.link.findFirst({
+        where: {
+          user_id: id,
+        },
+        orderBy: {
+          analytics: {
+            _count: 'desc',
+          },
+        },
+        select: {
+          id: true,
+          short_url: true,
+          collection: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      return reply.status(200).send({
+        collections,
+        links,
+        clicks,
+        latestLink: latestLink && {
+          id: latestLink.id,
+          url: `https://ezly.tech/${latestLink.short_url}`,
+          collection: latestLink.collection.name,
+        },
+        popularLink: popularLink && {
+          id: popularLink.id,
+          url: `https://ezly.tech/${popularLink.short_url}`,
+          collection: popularLink.collection.name,
+        },
+      });
     } catch (err) {
-      return reply.badRequest('error while retreiving res');
+      console.log(err);
+
+      return reply.badRequest('error while retrieving res');
     }
   };
