@@ -10,18 +10,16 @@ export const getCollections =
         where: {
           user_id: id,
         },
-        select: {
-          createdAt: true,
-          name: true,
-          id: true,
-        },
-        orderBy: {
-          createdAt: 'desc',
+        include: {
+          links: true,
+          user: true,
         },
       });
 
-      return reply.status(200).send({ collections });
+      return reply.status(200).send({
+        collections,
+      });
     } catch (err) {
-      return reply.badRequest('error while retrieving all collections');
+      return reply.badRequest('error while retreiving all collections');
     }
   };

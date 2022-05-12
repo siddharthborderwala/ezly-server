@@ -43,12 +43,11 @@ model Link {
 }
 
 model Collection {
-    id        String   @id @default(uuid())
-    name      String
-    user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-    user_id   String
-    links     Link[]
-    createdAt DateTime @default(now())
+    id      String @id @default(uuid())
+    name    String
+    user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user_id String
+    links   Link[]
 
     @@unique([name, user_id])
 }
