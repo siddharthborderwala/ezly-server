@@ -49,7 +49,10 @@ app.register(cors, {
       cb(null, true);
       return;
     }
-    if (/[\w-]*.ezly.tech/.test(origin)) {
+    if (
+      process.env.NODE_ENV === 'production' &&
+      /[\w-]*.ezly.to/.test(origin)
+    ) {
       cb(null, true);
       return;
     }
