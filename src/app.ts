@@ -44,7 +44,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.register(cors, {
-  origin: '*',
+  origin: ['https://ezly.tech', 'https://app.ezly.tech'],
   credentials: true,
 });
 
