@@ -44,9 +44,16 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.register(cors, {
-  origin: (_, cb) => {
-    cb(null, true);
-    return;
+  origin: (origin, cb) => {
+    if (process.env.NODE_ENV === 'development') {
+      cb(null, true);
+      return;
+    }
+    if (/[\w-]*.ezly.tech/.test(origin)) {
+      cb(null, true);
+      return;
+    }
+    cb(new Error('Not allowed'), false);
   },
 });
 
